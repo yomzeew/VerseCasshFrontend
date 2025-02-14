@@ -1,20 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import './global.css'
+import MainPage from './pages/mainPage';
+import { useFonts } from 'expo-font';
+import { ThemeProvider } from './hooks/useTheme';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    'Geist-Regular': require('./assets/fonts/Geist-Regular.ttf'),
+    'Geist-Bold': require('./assets/fonts/Geist-Bold.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null; // or a loading screen
+  }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider >
+      <MainPage/>
+
+    </ThemeProvider>
+    
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+

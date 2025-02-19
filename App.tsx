@@ -4,6 +4,9 @@ import './global.css'
 import MainPage from './pages/mainPage';
 import { useFonts } from 'expo-font';
 import { ThemeProvider } from './hooks/useTheme';
+import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-gesture-handler'
+import StackScreen from './routes/StackScreen';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -16,8 +19,9 @@ export default function App() {
   }
   return (
     <ThemeProvider >
-      <MainPage/>
-
+     <NavigationContainer>
+      <StackScreen/>
+     </NavigationContainer>
     </ThemeProvider>
     
   );

@@ -163,6 +163,7 @@ const SecondStage = ({currentindex,setcurrentIndex}:ComponentProps) => {
                 {sound===null?
                 <>
                 <View className="w-32 items-center ">
+                    <Text className="font-bold">John 6:3</Text>
                     <Text className="text-lg text-center italic">
                     And Jesus went up into a mountain, and there he sat with his disciples.
                     </Text>

@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react"; // Add useEffect
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity,Image, ScrollView } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useTheme } from "../hooks/useTheme";
 import { useAudio } from "../hooks/useAudioHook";
@@ -12,17 +12,21 @@ import RoundedComponent from "../components/roundedComponent";
 import { RecordAnimation, StartRecordAnimation } from "../components/animation/animationComponent";
 import Spacer from "../components/spacer";
 import ButtonComponent from "../components/buttonComponent";
+import SliderModalTemplate from "../components/slideupContainer";
 
 const MainPage = () => {
   const [data, setData] = useState<string[]>([]);
+  const [showloader,setshowloader]=useState<boolean>(false)
   const [placeholder, setPlaceholder] = useState<string>(
     "Listening for a verse... Speak a scripture to see it displayed"
   );
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [verseref, setverseref] = useState<string>('');
   const [verse, setverse] = useState<string>('');
   const [currentindex, setcurrentindex] = useState<number>(0);
   const [expandedVerses, setExpandedVerses] = useState<{ [key: number]: { verse: string, reference: string } }>({});
   const { theme } = useTheme();
+  const imageSource=theme==='dark'?require('../assets/whiteversecatch.png'):require('../assets/blackversecatch.png')
   const {
     hasPermission,
     isRecording,
@@ -53,7 +57,9 @@ const MainPage = () => {
     console.log("Recording URI:", uri);
 
     if (uri) {
-      const uploadAudio = await uploadAudioFile(uri);
+      const controller = new AbortController();  // Create new controller
+      setAbortController(controller)
+      const uploadAudio = await uploadAudioFile(uri,setshowloader,controller);
       if (uploadAudio.success) {
         console.log("Upload successful");
         const getData = uploadAudio.verses || [];
@@ -89,15 +95,50 @@ const MainPage = () => {
     }
   };
 
+  const cancelUpload = () => {
+    if (abortController) {
+      abortController.abort();  // Abort the upload
+      setAbortController(null);
+    }
+  };
+  const [showslideup,setshowslideup]=useState(true)
+
   return (
+    <>
+{showslideup &&
+<SliderModalTemplate setshowmodal={setshowslideup} showmodal={showslideup} modalHeight={"80%"}>
+  <Themetext fontsize={18}>
+    Sign up/Login
+  </Themetext>
+
+  </SliderModalTemplate>
+  }
+
+   {showloader &&
+    <>
+ <View className="opacity-80 bg-slate-900 h-full w-full  absolute z-40"/>
+ <View className="h-full w-full absolute z-50 items-center justify-center">
+  <StartRecordAnimation/>
+  <Image resizeMode="contain" source={ require('../assets/whiteversecatch.png') } className="h-8 w-auto -mt-6"/>
+  <TouchableOpacity onPress={cancelUpload} className="bg-black rounded-2xl border-white border py-2 px-3 mt-3">
+    <Text className="text-white">Cancel Process</Text>
+  </TouchableOpacity>
+ </View>
+   </>
+   }
+
+   
     <ViewTheme className="h-full w-full flex-1 pt-[56px]">
       <StatusBar style="auto" />
+      <View className="items-center">
+      <Image resizeMode="contain" source={imageSource} className="w-36 h-12" />
+      <Spacer height={30} />
+      </View>
       <View className="flex-1 px-5 items-center">
-        <Themetext fontsize={20}>Verse Catch</Themetext>
-        <Spacer height={10} />
+        <ScrollView showsVerticalScrollIndicator={false} >
         {data.length > 0 ? (
           data.map((item: any, index: number) => (
-            <ViewTheme key={index} className="h-1/2 justify-center items-center w-full">
+            <ViewTheme key={index} className="h-auto justify-center items-center w-full">
               <ThemetextBold fontsize={24} className="font-bold">
                 {expandedVerses[index]?.reference || item?.reference}
               </ThemetextBold>
@@ -123,6 +164,9 @@ const MainPage = () => {
             </ThemetextBold>
           </ViewTheme>
         )}
+          
+        </ScrollView>
+       
       </View>
 
       {/* Bottom Section */}
@@ -196,6 +240,9 @@ const MainPage = () => {
         </View>
       </View>
     </ViewTheme>
+
+    </>
+    
   );
 };
 

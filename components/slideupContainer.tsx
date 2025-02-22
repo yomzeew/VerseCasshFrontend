@@ -54,7 +54,7 @@ const backgroundColor=theme==="dark"?"#000000":"#ffffff"
   return (
     <>
       {/* 🔹 Dim Background */}
-      {showmodal &&<Pressable onPress={() => setshowmodal(false)} className="h-full w-full absolute bg-slate-900 opacity-70 z-50" />}
+      {showmodal &&<Pressable  className="h-full w-full absolute bg-slate-900 opacity-70 z-50" />}
       {showmodal && (
         <Animated.View
           style={{

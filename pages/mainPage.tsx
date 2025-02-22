@@ -13,6 +13,8 @@ import { RecordAnimation, StartRecordAnimation } from "../components/animation/a
 import Spacer from "../components/spacer";
 import ButtonComponent from "../components/buttonComponent";
 import SliderModalTemplate from "../components/slideupContainer";
+import LoginPage from "./loginPage";
+import AuthPAges from "./authPages";
 
 const MainPage = () => {
   const [data, setData] = useState<string[]>([]);
@@ -107,9 +109,7 @@ const MainPage = () => {
     <>
 {showslideup &&
 <SliderModalTemplate setshowmodal={setshowslideup} showmodal={showslideup} modalHeight={"80%"}>
-  <Themetext fontsize={18}>
-    Sign up/Login
-  </Themetext>
+ <AuthPAges/>
 
   </SliderModalTemplate>
   }
@@ -158,8 +158,8 @@ const MainPage = () => {
             </ViewTheme>
           ))
         ) : (
-          <ViewTheme className="h-1/2 justify-center items-center">
-            <ThemetextBold fontsize={24} className="font-bold">
+          <ViewTheme className="justify-center items-center w-[90%]">
+            <ThemetextBold fontsize={24} className="font-bold text-center">
               {placeholder}
             </ThemetextBold>
           </ViewTheme>
